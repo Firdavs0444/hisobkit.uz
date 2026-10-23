@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HisobKit – kredit, QQS va foiz kalkulyatori</title>
+<meta name="description" content="Bepul onlayn kalkulyatorlar: kredit toʻlovi (annuitet va differensial), QQS hisoblash, foiz hisoblash. Tez, qulay, roʻyxatdan oʻtish shart emas.">
+<style>
+:root{--bg:#f5f7f4;--card:#fff;--ink:#12261f;--mute:#5d6f67;--line:#dbe3de;--acc:#0b7a4b;--acc-ink:#fff;--soft:#e6f2ec;--ad:#fff8e1;--adline:#e8d48a;--font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a15;--card:#16241d;--ink:#e8f1ec;--mute:#9bb0a6;--line:#27382f;--acc:#3ccf8e;--acc-ink:#07261a;--soft:#1b2f25;--ad:#2a2612;--adline:#5c5224}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding:0 18px}
+header{padding:28px 0 8px}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.01em}
+.logo span{color:var(--acc)}
+h1{font-size:clamp(1.7rem,5vw,2.6rem);line-height:1.15;margin:14px 0 8px;letter-spacing:-.02em}
+.lead{color:var(--mute);margin:0 0 20px;max-width:56ch}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{font:inherit;font-weight:700;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.panel[hidden]{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+label{display:block;font-weight:600;font-size:.9rem;margin-bottom:4px}
+input,select{width:100%;font:inherit;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.go{margin-top:16px;font:inherit;font-weight:800;padding:12px 22px;border:0;border-radius:10px;background:var(--acc);color:var(--acc-ink);cursor:pointer}
+.out{margin-top:18px;padding:18px;border-radius:12px;background:var(--soft)}
+.big{font-size:clamp(1.6rem,6vw,2.3rem);font-weight:800;letter-spacing:-.02em}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.scroll{overflow-x:auto;margin-top:14px;max-height:340px;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:520px}
+th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{position:sticky;top:0;background:var(--card)}
+.ad{margin:22px 0;padding:14px;border:1px dashed var(--adline);background:var(--ad);border-radius:10px;text-align:center;color:var(--mute);font-size:.85rem;min-height:90px;display:flex;align-items:center;justify-content:center}
+article{margin:30px 0}
+article h2{font-size:1.2rem;margin:22px 0 6px}
+article p{color:var(--mute);max-width:68ch;margin:0 0 10px}
+footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--mute);font-size:.85rem}
+.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px}
+.offer{display:block;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);text-decoration:none}
+.offer b{display:block;margin-bottom:4px}
+.offer small{color:var(--mute)}
+.box{margin:26px 0;padding:22px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.box h2{margin:0 0 6px;font-size:1.25rem}
+.chk{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:.88rem;color:var(--mute)}
+.chk input{width:auto;margin-top:4px}
+.lnk{display:inline-block;margin-top:10px;font-weight:800;color:var(--acc)}
+#l-msg{margin-top:10px;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">Hisob<span>Kit</span></div>
+  <h1>Kredit, QQS va foizni bir daqiqada hisoblang</h1>
+  <p class="lead">Bepul kalkulyatorlar. Roʻyxatdan oʻtish shart emas, maʼlumotlaringiz saqlanmaydi.</p>
+</header>
+
+<!-- REKLAMA 1: AdSense / Yandex RSY kodini shu yerga qoʻying -->
+<div class="ad" id="ad1">Reklama joyi (728×90)</div>
+
+<div class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-t="kredit">Kredit</button>
+  <button role="tab" aria-selected="false" data-t="ipoteka">Ipoteka</button>
+  <button role="tab" aria-selected="false" data-t="avto">Avtokredit</button>
+  <button role="tab" aria-selected="false" data-t="valyuta">Valyuta</button>
+  <button role="tab" aria-selected="false" data-t="maosh">Maosh</button>
+  <button role="tab" aria-selected="false" data-t="qqs">QQS</button>
+  <button role="tab" aria-selected="false" data-t="foiz">Foiz</button>
+</div>
+
+<section class="panel" id="kredit" role="tabpanel">
+  <div class="grid">
+    <div><label for="k-sum">Kredit summasi (soʻm)</label><input id="k-sum" type="number" value="50000000" min="0"></div>
+    <div><label for="k-rate">Yillik foiz (%)</label><input id="k-rate" type="number" value="24" step="0.1" min="0"></div>
+    <div><label for="k-term">Muddat (oy)</label><input id="k-term" type="number" value="24" min="1"></div>
+    <div><label for="k-type">Toʻlov turi</label>
+      <select id="k-type"><option value="a">Annuitet (teng toʻlov)</option><option value="d">Differensial (kamayuvchi)</option></select></div>
+  </div>
+  <button class="go" id="k-go">Hisoblash</button>
+  <div class="out" id="k-out" aria-live="polite"></div>
+  <div class="scroll" id="k-tbl"></div>
+</section>
+
+<section class="panel" id="qqs" role="tabpanel" hidden>
+  <div class="grid">
+    <div><label for="q-sum">Summa (soʻm)</label><input id="q-sum" type="number" value="1000000" min="0"></div>
+    <div><label for="q-rate">QQS stavkasi (%)</label><input id="q-rate" type="number" value="12" step="0.1" min="0"></div>
+    <div><label for="q-mode">Amal</label>
+      <select id="q-mode"><option value="add">QQS qoʻshish</option><option value="cut">QQSni ajratib olish</option></select></div>
+  </div>
+  <button class="go" id="q-go">Hisoblash</button>
+  <div class="out" id="q-out" aria-live="polite"></div>
+</section>
+
+<section class="panel" id="foiz" role="tabpanel" hidden>
+  <div class="grid">
+    <div><label for="f-mode">Nimani hisoblaymiz?</label>
+      <select id="f-mode">
+        <option value="of">A ning B foizi nechaga teng</option>
+        <option value="what">A soni B ning necha foizi</option>
+        <option value="up">A ni B foizga oshirish</option>
+        <option value="down">A ni B foizga kamaytirish</option>
+      </select></div>
+    <div><label for="f-a">A</label><input id="f-a" type="number" value="2000000"></div>
+    <div><label for="f-b">B</label><input id="f-b" type="number" value="15"></div>
+  </div>
+  <button class="go" id="f-go">Hisoblash</button>
+  <div class="out" id="f-out" aria-live="polite"></div>
+</section>
+
+<section class="panel" id="valyuta" role="tabpanel" hidden>
+  <div class="grid">
+    <div><label for="v-a">Miqdor</label><input id="v-a" type="number" value="100"></div>
+    <div><label for="v-f">Qaysi valyutadan</label><select id="v-f"><option>USD</option><option>EUR</option><option>RUB</option><option>UZS</option></select></div>
+    <div><label for="v-t">Qaysi valyutaga</label><select id="v-t"><option>UZS</option><option>USD</option><option>EUR</option><option>RUB</option></select></div>
+  </div>
+  <p style="color:var(--mute);font-size:.88rem;margin:14px 0 6px">Kurslar (1 birlik = necha soʻm). Markaziy bank kursiga qarab yangilab turing:</p>
+  <div class="grid">
+    <div><label for="v-usd">USD</label><input id="v-usd" type="number" value="12000"></div>
+    <div><label for="v-eur">EUR</label><input id="v-eur" type="number" value="14000"></div>
+    <div><label for="v-rub">RUB</label><input id="v-rub" type="number" value="150"></div>
+  </div>
+  <button class="go" id="v-go">Konvertatsiya</button>
+  <div class="out" id="v-out" aria-live="polite"></div>
+</section>
+
+<section class="panel" id="maosh" role="tabpanel" hidden>
+  <div class="grid">
+    <div><label for="m-mode">Amal</label><select id="m-mode"><option value="g">Hisoblangandan qoʻlga tegadigan</option><option value="n">Qoʻlga tegadigandan hisoblangan</option></select></div>
+    <div><label for="m-a">Maosh (soʻm)</label><input id="m-a" type="number" value="6000000"></div>
+    <div><label for="m-j">JShDSh (%)</label><input id="m-j" type="number" value="12" step="0.1"></div>
+    <div><label for="m-i">INPS (%)</label><input id="m-i" type="number" value="0.1" step="0.1"></div>
+  </div>
+  <button class="go" id="m-go">Hisoblash</button>
+  <div class="out" id="m-out" aria-live="polite"></div>
+</section>
+
+<div class="box">
+  <h2>Kredit takliflari</h2>
+  <small style="color:var(--mute)">Reklama. Havolalarni oʻz hamkorlik havolalaringizga almashtiring.</small>
+  <div class="offers">
+    <a class="offer" href="#" rel="sponsored nofollow noopener" target="_blank"><b>Bank nomi 1</b><small>Iste’mol krediti, yillik ... % dan</small></a>
+    <a class="offer" href="#" rel="sponsored nofollow noopener" target="_blank"><b>Bank nomi 2</b><small>Ipoteka, boshlangʻich badal ... % dan</small></a>
+    <a class="offer" href="#" rel="sponsored nofollow noopener" target="_blank"><b>Sugʻurta kompaniyasi</b><small>Avto sugʻurta, onlayn rasmiylashtirish</small></a>
+  </div>
+</div>
+
+<div class="box" id="ariza">
+  <h2>Ariza qoldiring</h2>
+  <p style="color:var(--mute);margin:0 0 14px">Maʼlumotingiz Telegram orqali yuboriladi, biz siz bilan bogʻlanamiz.</p>
+  <div class="grid">
+    <div><label for="l-name">Ismingiz</label><input id="l-name" type="text" autocomplete="name"></div>
+    <div><label for="l-phone">Telefon</label><input id="l-phone" type="tel" placeholder="+998 ..." autocomplete="tel"></div>
+    <div><label for="l-sum">Summa (soʻm)</label><input id="l-sum" type="number"></div>
+    <div><label for="l-type">Xizmat</label><select id="l-type"><option>Iste’mol krediti</option><option>Ipoteka</option><option>Avtokredit</option><option>Sugʻurta</option></select></div>
+  </div>
+  <label class="chk"><input type="checkbox" id="l-ok"> Shaxsiy maʼlumotlarimni ariza koʻrib chiqilishi uchun qayta ishlashga roziman.</label>
+  <button class="go" id="l-go">Telegram orqali yuborish</button>
+  <div id="l-msg" aria-live="polite"></div>
+</div>
+
+<div class="box">
+  <h2>Saytingizga kalkulyator kerakmi?</h2>
+  <p style="color:var(--mute);margin:0">Qurilish, avtosalon, koʻchmas mulk yoki sugʻurta biznesingiz uchun shunday kalkulyatorni brendingiz bilan tayyorlab beramiz.</p>
+  <a class="lnk" data-tg href="#" target="_blank" rel="noopener">Telegramda yozing</a>
+</div>
+
+<!-- REKLAMA 2 -->
+<div class="ad" id="ad2">Reklama joyi (300×250)</div>
+
+<article>
+  <h2>Annuitet va differensial toʻlov nima?</h2>
+  <p>Annuitet toʻlovda har oy bir xil summa toʻlanadi: dastlab foiz qismi katta, keyin asosiy qarz ulushi oshadi. Differensial toʻlovda asosiy qarz teng boʻlinadi, shuning uchun birinchi oylar toʻlovi eng katta, keyin kamayib boradi va umumiy ortiqcha toʻlov odatda kamroq boʻladi.</p>
+  <h2>QQS qanday hisoblanadi?</h2>
+  <p>QQS qoʻshishda summa stavkaga koʻpaytirilib, ustiga qoʻshiladi. QQS ichidan ajratishda esa umumiy summa (1 + stavka) ga boʻlinadi. Amaldagi stavkani soliq qonunchiligidan tekshirib, kerak boʻlsa oʻzgartiring.</p>
+</article>
+
+<footer>
+  © HisobKit. Natijalar taxminiy, rasmiy shartnoma oʻrnini bosmaydi. Bank shartlarini (komissiya, sugʻurta) alohida tekshiring.
+</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  function fmt(n){return Math.round(n).toLocaleString("ru-RU").replace(/\u00a0/g," ")+" soʻm"}
+  function num(i){var v=parseFloat($(i).value);return isNaN(v)?0:v}
+  function row(a,b){return '<div class="row"><span>'+a+'</span><strong>'+b+'</strong></div>'}
+
+  document.querySelectorAll(".tabs button").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll(".tabs button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+      ["kredit","ipoteka","avto","valyuta","maosh","qqs","foiz"].forEach(function(id){$(id).hidden=(id!==b.dataset.t)});
+    });
+  });
+
+  function kredit(){
+    var P=num("k-sum"),r=num("k-rate")/100/12,n=Math.max(1,Math.round(num("k-term"))),t=$("k-type").value;
+    var bal=P,total=0,rows="",first=0,last=0,i,pay,intr,princ;
+    for(i=1;i<=n;i++){
+      intr=bal*r;
+      if(t==="a"){pay=r===0?P/n:P*r/(1-Math.pow(1+r,-n));princ=pay-intr}
+      else{princ=P/n;pay=princ+intr}
+      bal=Math.max(0,bal-princ);total+=pay;
+      if(i===1)first=pay;if(i===n)last=pay;
+      rows+="<tr><td>"+i+"</td><td>"+fmt(pay)+"</td><td>"+fmt(princ)+"</td><td>"+fmt(intr)+"</td><td>"+fmt(bal)+"</td></tr>";
+    }
+    var head=t==="a"?'<div class="big">'+fmt(first)+'</div><div>oyiga toʻlov</div>':'<div class="big">'+fmt(first)+'</div><div>birinchi oy toʻlovi (oxirgisi '+fmt(last)+')</div>';
+    $("k-out").innerHTML=head+row("Jami toʻlov",fmt(total))+row("Ortiqcha toʻlov (foiz)",fmt(total-P));
+    $("k-tbl").innerHTML="<table><thead><tr><th>Oy</th><th>Toʻlov</th><th>Asosiy qarz</th><th>Foiz</th><th>Qoldiq</th></tr></thead><tbody>"+rows+"</tbody></table>";
+  }
+
+  function qqs(){
+    var s=num("q-sum"),r=num("q-rate")/100,m=$("q-mode").value,v,base,tot;
+    if(m==="add"){base=s;v=s*r;tot=s+v}else{tot=s;base=s/(1+r);v=tot-base}
+    $("q-out").innerHTML='<div class="big">'+fmt(m==="add"?tot:base)+'</div><div>'+(m==="add"?"QQS bilan jami":"QQSsiz summa")+'</div>'+row("QQSsiz summa",fmt(base))+row("QQS",fmt(v))+row("QQS bilan summa",fmt(tot));
+  }
+
+  function foiz(){
+    var a=num("f-a"),b=num("f-b"),m=$("f-mode").value,res,txt;
+    if(m==="of"){res=a*b/100;txt=res.toLocaleString("ru-RU",{maximumFractionDigits:2})}
+    else if(m==="what"){res=b===0?0:a/b*100;txt=res.toLocaleString("ru-RU",{maximumFractionDigits:2})+"%"}
+    else if(m==="up"){res=a*(1+b/100);txt=res.toLocaleString("ru-RU",{maximumFractionDigits:2})}
+    else{res=a*(1-b/100);txt=res.toLocaleString("ru-RU",{maximumFractionDigits:2})}
+    $("f-out").innerHTML='<div class="big">'+txt+'</div>';
+  }
+
+  $("k-go").addEventListener("click",kredit);
+  $("q-go").addEventListener("click",qqs);
+  $("f-go").addEventListener("click",foiz);
+  var TG="https://t.me/Toxirov_dev"; /* Telegram username (@siz) */
+  document.querySelectorAll("[data-tg]").forEach(function(a){a.href="https://t.me/"+TG});
+
+  function loanCalc(P,rate,n,t){var r=rate/100/12,bal=P,tot=0,first=0,last=0,i,pay,pr,it;for(i=1;i<=n;i++){it=bal*r;if(t==="a"){pay=r===0?P/n:P*r/(1-Math.pow(1+r,-n));pr=pay-it}else{pr=P/n;pay=pr+it}bal-=pr;tot+=pay;if(i===1)first=pay;if(i===n)last=pay}return{first:first,last:last,tot:tot}}
+  function loanPanel(id,c){
+    var h='<section class="panel" id="'+id+'" role="tabpanel" hidden><div class="grid">'+
+    '<div><label for="'+id+'-p">'+c.pl+' (soʻm)</label><input id="'+id+'-p" type="number" value="'+c.p+'" min="0"></div>'+
+    '<div><label for="'+id+'-d">Boshlangʻich badal (%)</label><input id="'+id+'-d" type="number" value="'+c.d+'" min="0" max="100"></div>'+
+    '<div><label for="'+id+'-r">Yillik foiz (%)</label><input id="'+id+'-r" type="number" value="'+c.r+'" step="0.1" min="0"></div>'+
+    '<div><label for="'+id+'-n">Muddat (oy)</label><input id="'+id+'-n" type="number" value="'+c.n+'" min="1"></div>'+
+    '<div><label for="'+id+'-t">Toʻlov turi</label><select id="'+id+'-t"><option value="a">Annuitet</option><option value="d">Differensial</option></select></div>'+
+    '</div><button class="go" id="'+id+'-go">Hisoblash</button><div class="out" id="'+id+'-out" aria-live="polite"></div></section>';
+    $("kredit").insertAdjacentHTML("afterend",h);
+    function run(){var price=num(id+"-p"),down=price*num(id+"-d")/100,loan=price-down,n=Math.max(1,Math.round(num(id+"-n"))),t=$(id+"-t").value,x=loanCalc(loan,num(id+"-r"),n,t);
+      $(id+"-out").innerHTML='<div class="big">'+fmt(x.first)+'</div><div>'+(t==="a"?"oyiga toʻlov":"birinchi oy toʻlovi (oxirgisi "+fmt(x.last)+")")+'</div>'+row("Kredit summasi",fmt(loan))+row("Boshlangʻich badal",fmt(down))+row("Jami toʻlov",fmt(x.tot))+row("Ortiqcha toʻlov (foiz)",fmt(x.tot-loan));}
+    $(id+"-go").addEventListener("click",run);run();
+  }
+  loanPanel("ipoteka",{pl:"Uy narxi",p:600000000,d:20,r:20,n:180});
+  loanPanel("avto",{pl:"Avto narxi",p:300000000,d:30,r:24,n:60});
+
+  function val(){var R={UZS:1,USD:num("v-usd"),EUR:num("v-eur"),RUB:num("v-rub")},a=num("v-a"),f=$("v-f").value,t=$("v-t").value,k=R[t]?R[f]/R[t]:0;
+    $("v-out").innerHTML='<div class="big">'+(a*k).toLocaleString("ru-RU",{maximumFractionDigits:2})+" "+t+'</div>'+row("Kurs","1 "+f+" = "+k.toLocaleString("ru-RU",{maximumFractionDigits:4})+" "+t)}
+  function mz(){var g=num("m-a"),tx=(num("m-j")+num("m-i"))/100,m=$("m-mode").value,gross,net;
+    if(m==="g"){gross=g;net=g*(1-tx)}else{net=g;gross=tx<1?g/(1-tx):0}
+    $("m-out").innerHTML='<div class="big">'+fmt(m==="g"?net:gross)+'</div><div>'+(m==="g"?"qoʻlga tegadigan maosh":"hisoblangan maosh")+'</div>'+row("Hisoblangan",fmt(gross))+row("Ushlanmalar",fmt(gross-net))+row("Qoʻlga tegadi",fmt(net))}
+  $("v-go").addEventListener("click",val);
+  $("m-go").addEventListener("click",mz);
+  $("l-go").addEventListener("click",function(){
+    var n=$("l-name").value.trim(),p=$("l-phone").value.trim();
+    if(!n||!p||!$("l-ok").checked){$("l-msg").textContent="Ism va telefonni kiriting, rozilikni belgilang.";return}
+    var txt="Yangi ariza\nIsm: "+n+"\nTelefon: "+p+"\nXizmat: "+$("l-type").value+"\nSumma: "+($("l-sum").value||"-");
+    window.open("https://t.me/"+TG+"?text="+encodeURIComponent(txt),"_blank","noopener");
+    $("l-msg").textContent="Telegram ochildi. Xabarni yuborish tugmasini bosing.";
+  });
+  kredit();qqs();foiz();val();mz();
+})();
+</script>
+</body>
+</html>
